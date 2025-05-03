@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Monitoring</title>
+</head>
+<body>
+    <h1>Real-Time Monitoring</h1>
+    <pre id="output"></pre>
+
+    <script>
+        const output = document.getElementById('output');
+        const eventSource = new EventSource('/api/monitor');
+
+        eventSource.onmessage = function(event) {
+            output.textContent = event.data;
+        };
+    </script>
+</body>
+</html>
