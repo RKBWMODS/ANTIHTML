@@ -1,0 +1,17 @@
+{
+  "functions": {
+    "api/monitor.py": {
+      "runtime": "python3.9"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/monitor",
+      "dest": "api/monitor.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
+    }
+  ]
+}
