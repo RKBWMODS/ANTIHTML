@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulsa Dan Kuota Murah</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* RESET & VARIABEL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        :root {
+            --primary: #ff3e80;
+            --secondary: #00c2ff;
+            --accent: #00ffaa;
+            --accent2: #ffcc00;
+            --dark: #000;
+            --darker: #0a0a0a;
+            --light: #fff;
+            --gray: #1a1a1a;
+            --gray-light: #2a2a2a;
+            --transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 62, 128, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 194, 255, 0.05) 0%, transparent 20%);
+            background-attachment: fixed;
+        }
+        
+        /* LOADING SCREEN */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .loading-text {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent2), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientText 2s ease infinite;
+            text-shadow: 0 0 20px rgba(255, 62, 128, 0.3);
+            transform: rotateX(20deg);
+        }
+        
+        .loading-bar-container {
+            width: 80%;
+            max-width: 500px;
+            height: 25px;
+            background: var(--gray);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .loading-bar {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--accent2), var(--secondary));
+            border-radius: 15px;
+            animation: loadingAnim 3s cubic-bezier(0.25, 1, 0.5, 1.2) forwards;
+            box-shadow: 0 0 15px rgba(255, 62, 128, 0.5);
+        }
+        
+        .loading-percent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .loading-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleAnim 2s infinite;
+        }
+        
+        /* MAIN LAYOUT */
+        .container {
+            display: none;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 1.2s ease forwards;
+            animation-delay: 0.5s;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+        
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--accent);
+        }
+        
+        .nav-links a.active:after {
+            width: 100%;
+            background: var(--accent);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .cart-icon:hover {
+            transform: scale(1.1);
+            color: var(--accent);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 62, 128, 0.5);
+        }
+        
+        .user-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .user-icon:hover {
+            transform: scale(1.1);
+            color: var(--secondary);
+        }
+        
+        /* HERO SECTION */
+        .hero {
+            text-align: center;
+            padding: 5rem 1rem;
+            margin: 2rem 0 3rem;
+            background: linear-gradient(135deg, rgba(255,62,128,0.08), rgba(0,194,255,0.08));
+            border-radius: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            animation: rotate 25s linear infinite;
+            z-index: -1;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            line-height: 1.2;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(45deg, var(--primary), var(--accent2), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientText 5s ease infinite;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            color: #ddd;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            box-shadow: 0 10px 20px rgba(255, 62, 128, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 62, 128, 0.4);
+        }
+        
+        .cta-button:hover:before {
+            opacity: 1;
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(0, 255, 170, 0.1);
+        }
+        
+        /* OPERATOR SECTION */
+        .operator-section {
+            margin: 4rem 0;
+            padding: 2rem;
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 3rem 0 2rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0 1rem;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 80%;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            border-radius: 3px;
+        }
+        
+        .operator-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+        
+        .operator-card {
+            background: var(--gray);
+            border-radius: 15px;
+            padding: 1.5rem;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .operator-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .operator-logo {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        
+        .operator-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        /* PRODUCTS SECTION */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+        
+        .product-card {
+            background: linear-gradient(145deg, #1a1a1a, #151515);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(0);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(255,62,128,0.2);
+        }
+        
+        .product-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .product-header {
+            padding: 1.8rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent2);
+            color: var(--dark);
+            padding: 5px 30px;
+            transform: rotate(45deg);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(0, 255, 170, 0.3);
+        }
+        
+        .product-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-description {
+            color: #aaa;
+            font-size: 1rem;
+        }
+        
+        .product-body {
+            padding: 1.8rem;
+        }
+        
+        .product-price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 1.8rem;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(0, 255, 170, 0.2);
+        }
+        
+        .product-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .product-features li {
+            padding: 0.7rem 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+        
+        .product-features li i {
+            color: var(--primary);
+            margin-right: 0.8rem;
+            min-width: 20px;
+        }
+        
+        .product-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        
+        .product-button:hover {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(255, 62, 128, 0.3);
+        }
+        
+        /* TESTIMONIAL SECTION */
+        .testimonial-section {
+            margin: 5rem 0;
+            padding: 3rem;
+            background: rgba(20, 20, 20, 0.7);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .testimonial-card {
+            background: var(--gray);
+            padding: 2rem;
+            border-radius: 20px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .testimonial-card:before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.2;
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .author-info p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* FOOTER */
+        footer {
+            margin-top: 4rem;
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        
+        .footer-links a i {
+            color: var(--secondary);
+            width: 20px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gray);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.3rem;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 62, 128, 0.3);
+        }
+        
+        .copyright {
+            color: #777;
+            font-size: 0.95rem;
+        }
+
+        /* MODAL PEMBELIAN */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-content {
+            background: var(--darker);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 50px rgba(255, 62, 128, 0.3);
+            animation: modalIn 0.5s ease;
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+        }
+        
+        .nominal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .nominal-option {
+            background: var(--gray);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .nominal-option:hover, .nominal-option.selected {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            transform: translateY(-5px);
+        }
+        
+        .submit-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        
+        .submit-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 62, 128, 0.3);
+        }
+        
+        /* MODAL SUKSES */
+        .success-modal {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .success-message {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-details {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        
+        .order-details p {
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .order-details span {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        /* ANIMATIONS */
+        @keyframes loadingAnim {
+            0% { width: 0%; }
+            30% { width: 45%; }
+            60% { width: 80%; }
+            100% { width: 100%; }
+        }
+        
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes particleAnim {
+            0% { 
+                opacity: 0;
+                transform: translate(0, 0) scale(0);
+            }
+            20% { opacity: 1; }
+            100% { 
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) scale(1);
+            }
+        }
+        
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1200px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .nav-links {
+                gap: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .loading-text {
+                font-size: 2.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .testimonial-section {
+                padding: 2rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .loading-text {
+                font-size: 2rem;
+            }
+            
+            .loading-bar-container {
+                width: 90%;
+                height: 20px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .cta-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .operator-card {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .operator-logo {
+                font-size: 2.5rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nominal-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-text">TOPUP MURAH</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+                <div class="loading-percent">0%</div>
+            </div>
+            <div class="loading-particles" id="particles-container"></div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                CRTDALAM
+            </div>
+            <div class="nav-links">
+                <a href="#" class="active">Beranda</a>
+                <a href="#">Pulsa</a>
+                <a href="#">Kuota</a>
+                <a href="#">Paket Data</a>
+                <a href="#">Listrik</a>
+                <a href="#">Voucher</a>
+            </div>
+            <div class="header-right">
+                <div class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div class="cart-count">0</div>
+                </div>
+                <div class="user-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>TOPUP <span class="hero-gradient">GAME & KUOTA</span> SUPER MURAH </h1>
+            <p>Nimati diskon pertama dalam pembelian di dalam website kami, Kami memberikan pelayanan yang semaksimal mungkin untuk anda. Krotik saran mungkin akan kami tindak lanjuti dengan cepat.</p>
+            <div class="cta-buttons">
+                <button class="cta-button" id="buyNowBtn">
+                    <i class="fas fa-bolt"></i> BELI SEKARANG
+                </button>
+                <button class="cta-button secondary" id="promoBtn">
+                    <i class="fas fa-gift"></i> PROMO UNTUKMU
+                </button>
+            </div>
+        </section>
+        
+        <!-- Operator Section -->
+        <h2 class="section-title">SEGERA HADIR</h2>
+        <div class="operator-section">
+            <div class="operator-grid">
+                <div class="operator-card" data-operator="telkomsel">
+                    <div class="operator-logo"><i class="fas fa-sim-card"></i></div>
+                    <div class="operator-name">Nokos</div>
+                </div>
+                <div class="operator-card" data-operator="xl">
+                    <div class="operator-logo"><i class="fas fa-signal"></i></div>
+                    <div class="operator-name">Voucer</div>
+                </div>
+                <div class="operator-card" data-operator="indosat">
+                    <div class="operator-logo"><i class="fas fa-wifi"></i></div>
+                    <div class="operator-name">Pulsa</div>
+                </div>
+                <div class="operator-card" data-operator="smartfren">
+                    <div class="operator-logo"><i class="fas fa-bolt"></i></div>
+                    <div class="operator-name">Paket Data</div>
+                </div>
+                <div class="operator-card" data-operator="tri">
+                    <div class="operator-logo"><i class="fas fa-fire"></i></div>
+                    <div class="operator-name">Top Up Game</div>
+                </div>
+                <div class="operator-card" data-operator="axis">
+                    <div class="operator-logo"><i class="fas fa-globe"></i></div>
+                    <div class="operator-name">Token Listrik</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Section -->
+        <h2 class="section-title">PENGGUNA PERTAMA</h2>
+        
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-badge">HOT</div>
+                    <div class="product-icon"><i class="fas fa-bolt"></i></div>
+                    <h3 class="product-title">PULSA REGULER</h3>
+                    <p class="product-description">Beli pulsa termurah dan dapatkan tambahan pulsa.</p>
+                </div>
+                <div class="product-body">
+                    <div class="product-price">Rp 5.000 - 1.500.000</div>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check-circle"></i> Proses 5 menit</li>
+                        <li><i class="fas fa-check-circle"></i> Semua operator</li>
+                        <li><i class="fas fa-check-circle"></i> Bonus poin reward</li>
+                        <li><i class="fas fa-check-circle"></i> Tanpa potongan admin</li>
+                    </ul>
+                    <button class="product-button" data-product="pulsa">CLICK DISINI</button>
+                </div>
+            </div>
+            
+            <!-- Product 2 -->
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-icon"><i class="fas fa-wifi"></i></div>
+                    <h3 class="product-title">KUOTA INTERNET</h3>
+                    <p class="product-description">Paket data untuk semua jenis provider dan paling murah</p>
+                </div>
+                <div class="product-body">
+                    <div class="product-price">Rp 7.000 - 3.000.000</div>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check-circle"></i> Kuota utama + bonus</li>
+                        <li><i class="fas fa-check-circle"></i> Proses 5 menit</li>
+                        <li><i class="fas fa-check-circle"></i> Semua jaringan 4G/5G</li>
+                        <li><i class="fas fa-check-circle"></i> Streaming & gaming</li>
+                    </ul>
+                    <button class="product-button" data-product="kuota">CLICK DISINI</button>
+                </div>
+            </div>
+            
+            <!-- Product 3 -->
+            <div class="product-card">
+                <div class="product-header">
+                    <div class="product-badge">NEW</div>
+                    <div class="product-icon"><i class="fas fa-gamepad"></i></div>
+                    <h3 class="product-title">VOUCHER GAME</h3>
+                    <p class="product-description">Top Up All Game Termurah Disini</p>
+                </div>
+                <div class="product-body">
+                    <div class="product-price">Rp 5.000 - 10.000.000</div>
+                    <ul class="product-features">
+                        <li><i class="fas fa-check-circle"></i> Mobile Legends, Free Fire</li>
+                        <li><i class="fas fa-check-circle"></i> PUBG, Valorant, Genshin</li>
+                        <li><i class="fas fa-check-circle"></i> Poin Blank, Delta Force</li>
+                        <li><i class="fas fa-check-circle"></i> Arena Ovalor, Clash Of Clans</li>
+                    </ul>
+                    <button class="product-button" data-product="voucher">BELI VOUCHER</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testimonial Section -->
+        <h2 class="section-title">TESTIMONI PELANGGAN</h2>
+        <div class="testimonial-section">
+            <div class="testimonial-grid">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Nyoba 5k beneran masuk 1gbnya wkwk mantap diz😆</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DM</div>
+                        <div class="author-info">
+                            <h4>Doremifatur</h4>
+                            <p>Pelanggan lama</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Beli kuota yang 10k yang masuk 12k😂 Makasih lah</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SW</div>
+                        <div class="author-info">
+                            <h4>Sinta Wutwut</h4>
+                            <p>Pembeli kedua</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card">
+                    <p class="testimonial-text">Gua kira fake jir🗿 Mantap bang mayan nih web</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">WB</div>
+                        <div class="author-info">
+                            <h4>Wukong Babi</h4>
+                            <p>Pembeli pertama</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Tentang Kami</h3>
+                    <p style="color: #aaa; line-height: 1.7; margin-bottom: 1rem;">CRTDALAM adalah sebuat website yang menawarkan harga termurah yang mampu memberikan pelayanan terbaik, Selain itu juga website ini memiliki fitur top up murah yang jauh lebih murah dari website lain. Kami terus mengemangkan dan berusaha semaksimal mungkin untuk lebih banyak fitur kedepanya.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Layanan</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Pulsa All Operator</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Paket Data Internet</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Voucher Game Online</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Token Listrik PLN</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> BPJS & PDAM</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Dukungan</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Pusat Bantuan</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Cara Pembelian</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Metode Pembayaran</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Syarat & Ketentuan</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Kebijakan Privasi</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Kontak</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> Jakarta, Indonesia</a></li>
+                        <li><a href="#"><i class="fas fa-phone"></i> +62 889-8072-4038</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> dizflyze@gmail.com</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> Buka 24 Jam</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 2025 CRTDALAM. Hak Cipta Dilindungi. 
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal Pembelian -->
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">CLICK DISINI</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="phoneNumber">Nomor Anda</label>
+                    <input type="tel" id="phoneNumber" class="form-control" placeholder="0812345678">
+                </div>
+                <div class="form-group">
+                    <label for="operatorSelect">Operator</label>
+                    <select id="operatorSelect" class="form-control">
+                        <option value="">Janis kartu</option>
+                        <option value="telkomsel">Telkomsel</option>
+                        <option value="xl">XL Axiata</option>
+                        <option value="indosat">Indosat</option>
+                        <option value="smartfren">Smartfren</option>
+                        <option value="tri">Tri</option>
+                        <option value="axis">Axis</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Pilih Nominal</label>
+                    <div class="nominal-grid" id="nominalGrid">
+                        <!-- Nominal options will be generated by JS -->
+                    </div>
+                </div>
+                <button class="submit-button" id="submitPurchase">LANJUT PEMBAYARAN</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sukses -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>PEMBELIAN BERHASIL!</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body success-modal">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="success-message">
+                    Transaksi Anda Berhasil Diproses!
+                </div>
+                <div class="order-details">
+                    <p>Produk: <span id="successProduct">Pulsa Reguler</span></p>
+                    <p>Nomor: <span id="successNumber">081234567890</span></p>
+                    <p>Operator: <span id="successOperator">Telkomsel</span></p>
+                    <p>Nominal: <span id="successNominal">Rp 50.000</span></p>
+                    <p>Waktu: <span id="successTime">29 Mei 2023, 14:30 WIB</span></p>
+                </div>
+                <button class="submit-button" id="closeSuccess">TUTUP</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Simulate loading process
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.querySelector('.loading-screen');
+            const container = document.querySelector('.container');
+            const loadingBar = document.querySelector('.loading-bar');
+            const loadingPercent = document.querySelector('.loading-percent');
+            const particlesContainer = document.getElementById('particles-container');
+            
+            // Create particles
+            function createParticles() {
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    particle.style.setProperty('--x', `${Math.random() * 400 - 200}px`);
+                    particle.style.setProperty('--y', `${Math.random() * 200 - 100}px`);
+                    particle.style.width = `${Math.random() * 8 + 2}px`;
+                    particle.style.height = particle.style.width;
+                    particle.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                    particle.style.left = `${Math.random() * 100}%`;
+                    particle.style.top = `${Math.random() * 100}%`;
+                    particle.style.animationDelay = `${Math.random() * 2}s`;
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            createParticles();
+            
+            // Update loading percentage
+            let percent = 0;
+            const percentInterval = setInterval(() => {
+                percent += Math.floor(Math.random() * 10) + 1;
+                if (percent > 100) percent = 100;
+                loadingPercent.textContent = `${percent}%`;
+                
+                if (percent >= 100) {
+                    clearInterval(percentInterval);
+                }
+            }, 100);
+            
+            // Simulate loading with delay
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                loadingScreen.style.pointerEvents = 'none';
+                
+                // Show main content
+                container.style.display = 'block';
+                
+                // Remove loading screen after animation
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 1000);
+            }, 4000);
+            
+            // Add to cart functionality
+            const cartButtons = document.querySelectorAll('.product-button');
+            const cartCount = document.querySelector('.cart-count');
+            let count = 0;
+            let selectedOperator = null;
+            
+            cartButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    count++;
+                    cartCount.textContent = count;
+                    
+                    // Animation effect
+                    cartCount.style.transform = 'scale(1.5)';
+                    cartCount.style.background = 'var(--accent)';
+                    setTimeout(() => {
+                        cartCount.style.transform = 'scale(1)';
+                    }, 300);
+                    
+                    // Button feedback
+                    const originalText = this.textContent;
+                    this.textContent = 'Ditambahkan ✓';
+                    this.style.background = 'linear-gradient(45deg, var(--accent), var(--primary))';
+                    
+                    // Product card animation
+                    const productCard = this.closest('.product-card');
+                    productCard.style.boxShadow = '0 0 30px rgba(0, 255, 170, 0.5)';
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.style.background = '';
+                        productCard.style.boxShadow = '';
+                    }, 2000);
+
+                    // Show purchase modal
+                    const productType = this.getAttribute('data-product');
+                    showPurchaseModal(productType);
+                });
+            });
+            
+            // Hover effect for product cards
+            const productCards = document.querySelectorAll('.product-card');
+            
+            productCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // Operator card selection
+            const operatorCards = document.querySelectorAll('.operator-card');
+            
+            operatorCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Reset all cards
+                    operatorCards.forEach(c => {
+                        c.style.borderColor = 'transparent';
+                        c.style.boxShadow = '';
+                    });
+                    
+                    // Highlight selected card
+                    this.style.borderColor = 'var(--primary)';
+                    this.style.boxShadow = '0 10px 25px rgba(255, 62, 128, 0.3)';
+                    
+                    // Store selected operator
+                    selectedOperator = this.getAttribute('data-operator');
+                    document.getElementById('operatorSelect').value = selectedOperator;
+                });
+            });
+
+            // Modal functionality
+            const purchaseModal = document.getElementById('purchaseModal');
+            const successModal = document.getElementById('successModal');
+            const closeButtons = document.querySelectorAll('.close-modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const nominalGrid = document.getElementById('nominalGrid');
+            const buyNowBtn = document.getElementById('buyNowBtn');
+            const promoBtn = document.getElementById('promoBtn');
+            const submitPurchaseBtn = document.getElementById('submitPurchase');
+            const closeSuccessBtn = document.getElementById('closeSuccess');
+
+            // Product nominal options
+            const nominalOptions = {
+                pulsa: [5000, 10000, 20000, 50000, 100000, 150000],
+                kuota: [10000, 25000, 50000, 75000, 100000, 150000],
+                voucher: [5000, 10000, 50000, 100000, 150000, 200000, 250000]
+            };
+
+            // Product names
+            const productNames = {
+                pulsa: 'PULSA',
+                kuota: 'KUOTA INTERNET',
+                voucher: 'VOUCHER GAME'
+            };
+
+            // Operator names
+            const operatorNames = {
+                telkomsel: 'Telkomsel',
+                xl: 'XL Axiata',
+                indosat: 'Indosat',
+                smartfren: 'Smartfren',
+                tri: 'Tri',
+                axis: 'Axis'
+            };
+
+            // Show purchase modal
+            function showPurchaseModal(productType) {
+                // Set modal title
+                modalTitle.textContent = `BELI ${productNames[productType]}`;
+
+                // Generate nominal options
+                nominalGrid.innerHTML = '';
+                nominalOptions[productType].forEach(nominal => {
+                    const option = document.createElement('div');
+                    option.classList.add('nominal-option');
+                    option.textContent = `Rp ${nominal.toLocaleString()}`;
+                    option.setAttribute('data-value', nominal);
+                    option.addEventListener('click', function() {
+                        document.querySelectorAll('.nominal-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                    });
+                    nominalGrid.appendChild(option);
+                });
+
+                // Show modal
+                purchaseModal.style.display = 'flex';
+            }
+
+            // Close modal
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    purchaseModal.style.display = 'none';
+                    successModal.style.display = 'none';
+                });
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === purchaseModal) purchaseModal.style.display = 'none';
+                if (e.target === successModal) successModal.style.display = 'none';
+            });
+
+            // Buy Now button
+            buyNowBtn.addEventListener('click', function() {
+                showPurchaseModal('pulsa');
+            });
+
+            // Promo button
+            promoBtn.addEventListener('click', function() {
+                alert('Promo hari ini: Diskon 10% untuk pembelian pertama!');
+            });
+
+            // Submit purchase
+            submitPurchaseBtn.addEventListener('click', function() {
+                const phoneNumber = document.getElementById('phoneNumber').value;
+                const operator = document.getElementById('operatorSelect').value;
+                const selectedNominal = document.querySelector('.nominal-option.selected');
+                
+                if (!phoneNumber) {
+                    alert('Silakan masukkan nomor handphone');
+                    return;
+                }
+                
+                if (!operator) {
+                    alert('Silakan pilih operator');
+                    return;
+                }
+                
+                if (!selectedNominal) {
+                    alert('Silakan pilih nominal');
+                    return;
+                }
+                
+                // Show success modal
+                document.getElementById('successProduct').textContent = productNames[modalTitle.textContent.split(' ')[1].toLowerCase()];
+                document.getElementById('successNumber').textContent = phoneNumber;
+                document.getElementById('successOperator').textContent = operatorNames[operator];
+                document.getElementById('successNominal').textContent = selectedNominal.textContent;
+                
+                // Set current time
+                const now = new Date();
+                const options = { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                };
+                document.getElementById('successTime').textContent = now.toLocaleString('id-ID', options);
+                
+                purchaseModal.style.display = 'none';
+                successModal.style.display = 'flex';
+            });
+
+            // Close success modal
+            closeSuccessBtn.addEventListener('click', function() {
+                successModal.style.display = 'none';
+                
+                // Reset form
+                document.getElementById('phoneNumber').value = '';
+                document.getElementById('operatorSelect').value = '';
+                document.querySelectorAll('.nominal-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
